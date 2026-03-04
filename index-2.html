@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PartRush - Find Your Next Part-Time Gig</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS - Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Glide.js - Carousel -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    
+    <!-- Chart.js for stats -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-cyan: #0099ff;
+            --neon-pink: #ff6b9d;
+            --neon-orange: #ff6600;
+            --deep-orange: #ff4500;
+            --dark-bg: #ffffff;
+            --card-bg: #fff5f0;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 102, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 200, 100, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 150, 50, 0.06) 0%, transparent 50%);
+            z-index: -1;
+            animation: gradientShift 20s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.6; 
+            }
+            50% { 
+                transform: scale(1.1) rotate(5deg);
+                opacity: 1; 
+            }
+        }
+        
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--neon-orange);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(255, 102, 0, 0.1);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-orange), var(--deep-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            filter: drop-shadow(0 2px 4px rgba(255, 102, 0, 0.2));
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--neon-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            background: white;
+        }
+        
+        .nav-icon:hover {
+            background: var(--neon-orange);
+            border-color: var(--neon-orange);
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+            transform: scale(1.1);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 100px auto 0;
+            padding: 2rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--neon-orange) 0%, var(--deep-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        /* Search Bar */
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            position: relative;
+        }
+        
+        .search-bar {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            background: white;
+            border: 2px solid var(--neon-orange);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 102, 0, 0.1);
+        }
+        
+        .search-bar:focus {
+            border-color: var(--deep-orange);
+            box-shadow: 0 6px 30px rgba(255, 102, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .search-bar::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        /* Featured Jobs Carousel */
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--neon-orange);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-orange), transparent);
+        }
+        
+        .glide {
+            margin-bottom: 4rem;
+        }
+        
+        .job-card {
+            background: white;
+            border: 2px solid rgba(255, 102, 0, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 0 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-orange), var(--deep-orange));
+        }
+        
+        .job-card:hover {
+            border-color: var(--neon-orange);
+            box-shadow: 0 8px 30px rgba(255, 102, 0, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .job-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .company-name {
+            color: var(--neon-orange);
+            font-size: 0.9rem;
+        }
+        
+        .job-badge {
+            background: linear-gradient(135deg, var(--neon-orange), var(--deep-orange));
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .job-details {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .job-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .job-detail-item span {
+            color: var(--neon-orange);
+        }
+        
+        .job-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .job-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-orange), var(--deep-orange));
+            color: var(--text-primary);
+            box-shadow: 0 5px 20px rgba(255, 102, 0, 0.3);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 8px 30px rgba(255, 102, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--neon-orange);
+            border: 2px solid var(--neon-orange);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--neon-orange);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+        
+        /* Job Grid */
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background: white;
+            border: 2px solid rgba(255, 102, 0, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 245, 240, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 102, 0, 0.2);
+        }
+        
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-orange), var(--deep-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            height: 300px;
+        }
+        
+        /* Categories */
+        .categories {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+        
+        .category-card {
+            flex: 1;
+            min-width: 150px;
+            padding: 2rem 1.5rem;
+            background: white;
+            border: 2px solid rgba(255, 102, 0, 0.2);
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .category-card:hover {
+            border-color: var(--neon-orange);
+            box-shadow: 0 6px 25px rgba(255, 102, 0, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .category-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-count {
+            color: var(--neon-orange);
+            font-size: 0.9rem;
+        }
+        
+        /* Application Tracker */
+        .application-tracker {
+            background: white;
+            border: 2px solid rgba(255, 102, 0, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tracker-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 102, 0, 0.2);
+        }
+        
+        .tracker-tab {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tracker-tab.active {
+            color: var(--neon-orange);
+            border-bottom-color: var(--neon-orange);
+        }
+        
+        .tracker-tab:hover {
+            color: var(--deep-orange);
+        }
+        
+        .application-item {
+            padding: 1.5rem;
+            background: rgba(255, 245, 240, 0.5);
+            border-left: 4px solid var(--neon-orange);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .application-item:hover {
+            background: rgba(255, 245, 240, 0.9);
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(255, 102, 0, 0.1);
+        }
+        
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .application-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .status-badge {
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .status-waiting {
+            background: rgba(255, 200, 0, 0.2);
+            color: #cc8800;
+            border: 1px solid rgba(255, 200, 0, 0.5);
+        }
+        
+        .status-interview {
+            background: rgba(0, 150, 255, 0.2);
+            color: #0066cc;
+            border: 1px solid rgba(0, 150, 255, 0.5);
+        }
+        
+        .status-hired {
+            background: rgba(0, 200, 0, 0.2);
+            color: #008800;
+            border: 1px solid rgba(0, 200, 0, 0.5);
+        }
+        
+        .application-details {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid var(--neon-orange);
+            padding: 1rem;
+            box-shadow: 0 -2px 20px rgba(255, 102, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .bottom-nav-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+        }
+        
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--neon-orange);
+            background: rgba(255, 102, 0, 0.1);
+        }
+        
+        .nav-item-icon {
+            font-size: 1.5rem;
+        }
+        
+        .nav-item-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        /* Glide custom styles */
+        .glide__arrow {
+            background: var(--neon-orange);
+            border: none;
+            box-shadow: 0 2px 15px rgba(255, 102, 0, 0.3);
+        }
+        
+        .glide__arrow:hover {
+            background: var(--deep-orange);
+            box-shadow: 0 4px 20px rgba(255, 102, 0, 0.4);
+        }
+        
+        .glide__bullet {
+            background: rgba(255, 102, 0, 0.3);
+        }
+        
+        .glide__bullet--active {
+            background: var(--neon-orange);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .job-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .categories {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Scroll animations */
+        [data-aos] {
+            pointer-events: none;
+        }
+        
+        [data-aos].aos-animate {
+            pointer-events: auto;
+        }
+        
+        /* Pulsing effect for featured badge */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+        
+        .job-badge {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">PARTRUSH</div>
+            <div class="nav-icons">
+                <div class="nav-icon">🔔</div>
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-icon">👤</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero" data-aos="fade-up">
+            <h1>Rush into Your<br>Next Opportunity</h1>
+            <p>Part-time jobs that match your vibe. Fast. Easy. Neon.</p>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="search-container" data-aos="fade-up" data-aos-delay="100">
+            <input type="text" class="search-bar" placeholder="🔍 Search jobs, locations, or companies...">
+        </div>
+
+        <!-- Stats Section -->
+        <section class="stats-section" data-aos="fade-up">
+            <h2 class="section-title">Your Activity</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="stat-number" id="stat-applications">0</div>
+                    <div class="stat-label">Applications</div>
+                </div>
+                <div class="stat-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="stat-number" id="stat-interviews">0</div>
+                    <div class="stat-label">Interviews</div>
+                </div>
+                <div class="stat-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="stat-number" id="stat-saved">0</div>
+                    <div class="stat-label">Saved Jobs</div>
+                </div>
+                <div class="stat-card" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="stat-number" id="stat-response">0</div>
+                    <div class="stat-label">Response Rate</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section data-aos="fade-up">
+            <h2 class="section-title">Browse by Category</h2>
+            <div class="categories">
+                <div class="category-card" data-aos="flip-left" data-aos-delay="100">
+                    <div class="category-icon">☕</div>
+                    <div class="category-name">Cafe</div>
+                    <div class="category-count">24 jobs</div>
+                </div>
+                <div class="category-card" data-aos="flip-left" data-aos-delay="200">
+                    <div class="category-icon">🍔</div>
+                    <div class="category-name">Restaurant</div>
+                    <div class="category-count">31 jobs</div>
+                </div>
+                <div class="category-card" data-aos="flip-left" data-aos-delay="300">
+                    <div class="category-icon">🛍️</div>
+                    <div class="category-name">Retail</div>
+                    <div class="category-count">18 jobs</div>
+                </div>
+                <div class="category-card" data-aos="flip-left" data-aos-delay="400">
+                    <div class="category-icon">💼</div>
+                    <div class="category-name">Office</div>
+                    <div class="category-count">15 jobs</div>
+                </div>
+                <div class="category-card" data-aos="flip-left" data-aos-delay="500">
+                    <div class="category-icon">🎉</div>
+                    <div class="category-name">Events</div>
+                    <div class="category-count">9 jobs</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Jobs Carousel -->
+        <section data-aos="fade-up">
+            <h2 class="section-title">🔥 Hot Jobs Right Now</h2>
+            <div class="glide">
+                <div class="glide__track" data-glide-el="track">
+                    <ul class="glide__slides">
+                        <li class="glide__slide">
+                            <div class="job-card">
+                                <div class="job-header">
+                                    <div>
+                                        <div class="job-title">Barista</div>
+                                        <div class="company-name">Neon Brew Cafe</div>
+                                    </div>
+                                    <div class="job-badge">Featured</div>
+                                </div>
+                                <div class="job-details">
+                                    <div class="job-detail-item">
+                                        <span>📍</span> Gangnam-gu
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <span>💰</span> ₩14,000/hr
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <span>⏰</span> Part-time
+                                    </div>
+                                </div>
+                                <div class="job-description">
+                                    Make artisan coffee and serve customers in a vibrant cafe environment. Perfect for coffee lovers!
+                                </div>
+                                <div class="job-actions">
+                                    <button class="btn btn-primary">Quick Apply</button>
+                                    <button class="btn btn-secondary">Save</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="glide__slide">
+                            <div class="job-card">
+                                <div class="job-header">
+                                    <div>
+                                        <div class="job-title">Server</div>
+                                        <div class="company-name">Rush Kitchen</div>
+                                    </div>
+                                    <div class="job-badge">New</div>
+                                </div>
+                                <div class="job-details">
+                                    <div class="job-detail-item">
+                                        <span>📍</span> Hongdae
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <span>💰</span> ₩15,000/hr
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <span>⏰</span> Evening shifts
+                                    </div>
+                                </div>
+                                <div class="job-description">
+                                    Join our energetic team! Great tips and flexible scheduling for students.
+                                </div>
+                                <div class="job-actions">
+                                    <button class="btn btn-primary">Quick Apply</button>
+                                    <button class="btn btn-secondary">Save</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="glide__slide">
+                            <div class="job-card">
+                                <div class="job-header">
+                                    <div>
+                                        <div class="job-title">Sales Associate</div>
+                                        <div class="company-name">TechGear Store</div>
+                                    </div>
+                                    <div class="job-badge">Urgent</div>
+                                </div>
+                                <div class="job-details">
+                                    <div class="job-detail-item">
+                                        <span>📍</span> Myeongdong
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <span>💰</span> ₩13,500/hr
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <span>⏰</span> Weekend only
+                                    </div>
+                                </div>
+                                <div class="job-description">
+                                    Help customers find the perfect tech products. Commission bonuses available!
+                                </div>
+                                <div class="job-actions">
+                                    <button class="btn btn-primary">Quick Apply</button>
+                                    <button class="btn btn-secondary">Save</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="glide__slide">
+                            <div class="job-card">
+                                <div class="job-header">
+                                    <div>
+                                        <div class="job-title">Event Staff</div>
+                                        <div class="company-name">Neon Nights Events</div>
+                                    </div>
+                                    <div class="job-badge">Featured</div>
+                                </div>
+                                <div class="job-details">
+                                    <div class="job-detail-item">
+                                        <span>📍</span> Itaewon
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <span>💰</span> ₩18,000/hr
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <span>⏰</span> Event-based
+                                    </div>
+                                </div>
+                                <div class="job-description">
+                                    Work at exciting events and concerts. Great networking opportunity!
+                                </div>
+                                <div class="job-actions">
+                                    <button class="btn btn-primary">Quick Apply</button>
+                                    <button class="btn btn-secondary">Save</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="glide__arrows" data-glide-el="controls">
+                    <button class="glide__arrow glide__arrow--left" data-glide-dir="<">‹</button>
+                    <button class="glide__arrow glide__arrow--right" data-glide-dir=">">›</button>
+                </div>
+                <div class="glide__bullets" data-glide-el="controls[nav]">
+                    <button class="glide__bullet" data-glide-dir="=0"></button>
+                    <button class="glide__bullet" data-glide-dir="=1"></button>
+                    <button class="glide__bullet" data-glide-dir="=2"></button>
+                    <button class="glide__bullet" data-glide-dir="=3"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- More Jobs Grid -->
+        <section data-aos="fade-up">
+            <h2 class="section-title">More Opportunities</h2>
+            <div class="job-grid">
+                <div class="job-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-title">Cashier</div>
+                            <div class="company-name">Quick Mart 24</div>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <div class="job-detail-item">
+                            <span>📍</span> Sinchon
+                        </div>
+                        <div class="job-detail-item">
+                            <span>💰</span> ₩12,000/hr
+                        </div>
+                        <div class="job-detail-item">
+                            <span>⏰</span> Night shift
+                        </div>
+                    </div>
+                    <div class="job-description">
+                        Overnight cashier position. Perfect for night owls!
+                    </div>
+                    <div class="job-actions">
+                        <button class="btn btn-primary">Apply Now</button>
+                        <button class="btn btn-secondary">Details</button>
+                    </div>
+                </div>
+
+                <div class="job-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-title">Delivery Driver</div>
+                            <div class="company-name">Rush Delivery</div>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <div class="job-detail-item">
+                            <span>📍</span> All districts
+                        </div>
+                        <div class="job-detail-item">
+                            <span>💰</span> ₩16,000/hr
+                        </div>
+                        <div class="job-detail-item">
+                            <span>⏰</span> Flexible
+                        </div>
+                    </div>
+                    <div class="job-description">
+                        Deliver with your own vehicle. Set your own schedule!
+                    </div>
+                    <div class="job-actions">
+                        <button class="btn btn-primary">Apply Now</button>
+                        <button class="btn btn-secondary">Details</button>
+                    </div>
+                </div>
+
+                <div class="job-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-title">Tutor</div>
+                            <div class="company-name">Bright Academy</div>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <div class="job-detail-item">
+                            <span>📍</span> Online/Gangnam
+                        </div>
+                        <div class="job-detail-item">
+                            <span>💰</span> ₩25,000/hr
+                        </div>
+                        <div class="job-detail-item">
+                            <span>⏰</span> Afternoons
+                        </div>
+                    </div>
+                    <div class="job-description">
+                        Teach English or Math to students. Remote options available.
+                    </div>
+                    <div class="job-actions">
+                        <button class="btn btn-primary">Apply Now</button>
+                        <button class="btn btn-secondary">Details</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Application Tracker -->
+        <section class="application-tracker" data-aos="fade-up">
+            <h2 class="section-title">My Applications</h2>
+            <div class="tracker-tabs">
+                <button class="tracker-tab active">Waiting (3)</button>
+                <button class="tracker-tab">Interview (1)</button>
+                <button class="tracker-tab">Hired (0)</button>
+                <button class="tracker-tab">Not Selected (2)</button>
+            </div>
+            
+            <div class="application-item" data-aos="fade-right" data-aos-delay="100">
+                <div class="application-header">
+                    <div class="application-title">Barista - Neon Brew Cafe</div>
+                    <span class="status-badge status-waiting">Waiting</span>
+                </div>
+                <div class="application-details">
+                    Applied: Feb 5, 2026 • Expected response: Within 3 days
+                </div>
+            </div>
+
+            <div class="application-item" data-aos="fade-right" data-aos-delay="200">
+                <div class="application-header">
+                    <div class="application-title">Server - Rush Kitchen</div>
+                    <span class="status-badge status-interview">Interview Scheduled</span>
+                </div>
+                <div class="application-details">
+                    Interview: Feb 15, 2026 at 2:00 PM • 📍 Hongdae Branch
+                </div>
+            </div>
+
+            <div class="application-item" data-aos="fade-right" data-aos-delay="300">
+                <div class="application-header">
+                    <div class="application-title">Sales Associate - TechGear Store</div>
+                    <span class="status-badge status-waiting">Waiting</span>
+                </div>
+                <div class="application-details">
+                    Applied: Feb 3, 2026 • Expected response: Within 5 days
+                </div>
+            </div>
+        </section>
+
+        <div style="height: 100px;"></div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-content">
+            <div class="nav-item active">
+                <div class="nav-item-icon">🏠</div>
+                <div class="nav-item-label">Home</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-icon">🔍</div>
+                <div class="nav-item-label">Search</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-icon">📋</div>
+                <div class="nav-item-label">Applications</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-icon">📄</div>
+                <div class="nav-item-label">Resume</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-item-icon">👤</div>
+                <div class="nav-item-label">Profile</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- JavaScript Libraries -->
+    
+    <!-- AOS - Animate On Scroll -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Glide.js - Carousel -->
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+    
+    <!-- CountUp.js for animated numbers -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.2/countUp.umd.min.js"></script>
+    
+    <!-- GSAP for additional animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 50
+        });
+
+        // Initialize Glide Carousel
+        new Glide('.glide', {
+            type: 'carousel',
+            startAt: 0,
+            perView: 3,
+            gap: 20,
+            autoplay: 4000,
+            hoverpause: true,
+            breakpoints: {
+                1200: {
+                    perView: 2
+                },
+                768: {
+                    perView: 1
+                }
+            }
+        }).mount();
+
+        // CountUp.js for stats animation
+        const animateValue = (id, start, end, duration, suffix = '') => {
+            const obj = document.getElementById(id);
+            const options = {
+                startVal: start,
+                duration: duration / 1000,
+                suffix: suffix,
+                useEasing: true,
+                useGrouping: true
+            };
+            const counter = new countUp.CountUp(id, end, options);
+            if (!counter.error) {
+                counter.start();
+            }
+        };
+
+        // Trigger stats animation when visible
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateValue('stat-applications', 0, 12, 2000);
+                    animateValue('stat-interviews', 0, 3, 2000);
+                    animateValue('stat-saved', 0, 8, 2000);
+                    animateValue('stat-response', 0, 67, 2000, '%');
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+
+        // Chart.js - Activity Chart
+        const ctx = document.getElementById('activityChart');
+        if (ctx) {
+            const activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Applications',
+                        data: [2, 1, 3, 2, 4, 1, 2],
+                        borderColor: '#ff6600',
+                        backgroundColor: 'rgba(255, 102, 0, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#ff6600',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }, {
+                        label: 'Interviews',
+                        data: [0, 1, 0, 1, 0, 1, 0],
+                        borderColor: '#00ffff',
+                        backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#00ffff',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#1a1a1a',
+                                font: {
+                                    family: 'Space Mono',
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#666666',
+                                font: {
+                                    family: 'Space Mono'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 102, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#666666',
+                                font: {
+                                    family: 'Space Mono'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 102, 0, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // GSAP animations for interactive elements
+        gsap.from('.logo', {
+            duration: 1,
+            opacity: 0,
+            y: -50,
+            ease: 'bounce.out'
+        });
+
+        gsap.from('.nav-icons .nav-icon', {
+            duration: 0.8,
+            opacity: 0,
+            scale: 0,
+            stagger: 0.1,
+            ease: 'back.out(1.7)',
+            delay: 0.5
+        });
+
+        // Interactive hover effects with GSAP
+        document.querySelectorAll('.job-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    scale: 1.02,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: 'power2.in'
+                });
+            });
+        });
+
+        // Bottom nav interaction
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                gsap.fromTo(this, 
+                    { scale: 0.9 },
+                    { scale: 1, duration: 0.3, ease: 'back.out(2)' }
+                );
+            });
+        });
+
+        // Tracker tabs interaction
+        document.querySelectorAll('.tracker-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tracker-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Search bar focus animation
+        const searchBar = document.querySelector('.search-bar');
+        searchBar.addEventListener('focus', () => {
+            gsap.to(searchBar, {
+                scale: 1.02,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+
+        searchBar.addEventListener('blur', () => {
+            gsap.to(searchBar, {
+                scale: 1,
+                duration: 0.3,
+                ease: 'power2.in'
+            });
+        });
+
+        // Button click animations
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.5);
+                    left: ${x}px;
+                    top: ${y}px;
+                    transform: scale(0);
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                gsap.to(ripple, {
+                    scale: 2,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: 'power2.out',
+                    onComplete: () => ripple.remove()
+                });
+            });
+        });
+
+        // Category card interactions
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', () => {
+                gsap.to(card, {
+                    rotateY: 360,
+                    duration: 0.6,
+                    ease: 'power2.inOut'
+                });
+            });
+        });
+
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.hero h1');
+            
+            parallaxElements.forEach(el => {
+                const speed = 0.5;
+                gsap.to(el, {
+                    y: scrolled * speed,
+                    duration: 0,
+                    ease: 'none'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
